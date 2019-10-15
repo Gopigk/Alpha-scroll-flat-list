@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, View, Dimensions } from 'react-native';
+import { FlatList, View, Dimensions,RefreshControl } from 'react-native';
 import debounce from 'lodash/debounce';
 
 import AlphabeticScrollBar from './components/AlphabeticScrollBar';
@@ -117,6 +117,23 @@ export default class AlphaScrollFlatList extends Component {
             });
     }
 
+    wait(timeout) {
+      return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+      });
+    }
+
+    handlePullToRefresh(){
+         const [refreshing, setRefreshing] = React.useState(false);
+
+          const onRefresh = React.useCallback(() => {
+            setRefreshing(true);
+
+          wait(2000).then(() => setRefreshing(false));
+        }, [refreshing]);
+    }
+
+
     render () {
         return (
             <View onLayout={this.handleOnLayout.bind(this)}>
@@ -134,6 +151,7 @@ export default class AlphaScrollFlatList extends Component {
                         fontSizeMultiplier={this.props.scrollBarFontSizeMultiplier}
                         onScroll={debounce(this.handleOnScroll.bind(this))}
                         onScrollEnds={debounce(this.handleOnScrollEnds.bind(this))}
+                        onRefesh={this.handlePullToRefresh.bind(this)}
                     />
                 )}
                 {this.state.activeLetter && !this.props.hideSideBar
@@ -161,7 +179,8 @@ AlphaScrollFlatList.propTypes = {
     scrollBarFontSizeMultiplier: PropTypes.number,
     onScrollEnds: PropTypes.func,
     onScrollStarts: PropTypes.func,
-    scrollBarContainerStyle: PropTypes.object
+    scrollBarContainerStyle: PropTypes.object,
+    onRefresh: PropTypes.func
 };
 
 AlphaScrollFlatList.defaultProps = {
@@ -173,5 +192,6 @@ AlphaScrollFlatList.defaultProps = {
     scrollBarFontSizeMultiplier: 1,
     onScrollEnds: () => { },
     onScrollStarts: () => { },
-    scrollBarContainerStyle: { }
+    scrollBarContainerStyle: { },
+    onRefesh: () => { }
 };
