@@ -140,6 +140,12 @@ export default class AlphaScrollFlatList extends Component {
                 <FlatList
                     {...this.props}
                     ref={elem => this.list = elem}
+                     refreshControl={
+                        <RefreshControl
+                          
+                          onRefresh={this.handlePullToRefresh.bind(this)}
+                        />
+                    }
                 />
                 {this.props.hideSideBar ? null : (
                     <AlphabeticScrollBar
@@ -151,7 +157,6 @@ export default class AlphaScrollFlatList extends Component {
                         fontSizeMultiplier={this.props.scrollBarFontSizeMultiplier}
                         onScroll={debounce(this.handleOnScroll.bind(this))}
                         onScrollEnds={debounce(this.handleOnScrollEnds.bind(this))}
-                        onRefresh={this.handlePullToRefresh.bind(this)}
                     />
                 )}
                 {this.state.activeLetter && !this.props.hideSideBar
@@ -180,7 +185,6 @@ AlphaScrollFlatList.propTypes = {
     onScrollEnds: PropTypes.func,
     onScrollStarts: PropTypes.func,
     scrollBarContainerStyle: PropTypes.object,
-    onRefresh: PropTypes.func
 };
 
 AlphaScrollFlatList.defaultProps = {
@@ -193,5 +197,4 @@ AlphaScrollFlatList.defaultProps = {
     onScrollEnds: () => { },
     onScrollStarts: () => { },
     scrollBarContainerStyle: { },
-    onRefresh: () => { }
 };
